@@ -1,0 +1,30 @@
+{
+  "name": "tag-release",
+  "version": "0.0.1",
+  "description": "Automatically Tag and Release Repositories",
+  "main": "index.js",
+  "bin": {
+    "tag-release": "./index.js"
+  },
+  "scripts": {
+    "lint": "jscs ./ && eslint ./",
+    "lint:fix": "jscs ./ --fix && eslint ./ --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "gitty": "^3.3.3"
+  },
+  "devDependencies": {
+    "commander": "^2.9.0",
+    "eslint": "^1.10.3",
+    "eslint-config-leankit": "^1.1.0",
+    "jscs": "^2.9.0",
+    "nodegit": "^0.9.0",
+    "parallelshell": "^2.0.0",
+    "shelljs": "^0.5.3",
+    "simple-git": "^1.21.0"
+  }
+}
