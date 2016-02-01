@@ -52,6 +52,7 @@ export default ( git, options ) => [
 		} );
 	},
 	data => { // update CHANGELOG
+		// TODO remove merge commits
 		const CHANGELOG_PATH = "./CHANGELOG.md";
 		const version = `### ${ options.versions.newVersion }`;
 		const update = `${ version }\n\n${ data }`;
@@ -60,6 +61,25 @@ export default ( git, options ) => [
 		contents = contents.replace( /(## .*\n)/, `$1\n${ update }` );
 		utils.writeFile( CHANGELOG_PATH, contents );
 	},
+	() => {
+		console.log( "BEGIN git diff" );
+		return utils.promisify( ::git.diff )()
+			.then( data => {
+				console.log( "END git diff", data );
+				return utils.prompt( [ {
+					type: "confirm",
+					name: "proceed",
+					message: "Are you okay with this diff",
+					default: true
+				} ] ).then( answers => {
+					if ( answers.proceed ) {
+						return true;
+					}
+					process.exit( 0 ); // eslint-disable-line no-process-exit
+				} );
+			} );
+	},
+
 	() => {
 		console.log( "BEGIN git add CHANGELOG.md package.json" );
 		return utils.promisify( ::git.add )( [ "CHANGELOG.md", "package.json" ] )
@@ -70,25 +90,25 @@ export default ( git, options ) => [
 		console.log( `BEGIN ${ command }` );
 		return utils.promisify( ::git.commit )( options.versions.newVersion )
 			.then( () => console.log( `END ${ command }` ) );
+	},
+	() => {
+		// TODO Update the comment to be the changlog snippet
+		const command = `git tag -a v${ options.versions.newVersion } -m "COMMENT"`;
+		console.log( `BEGIN ${ command }` );
+		return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, "COMMENT" )
+			.then( () => console.log( `END ${ command }` ) );
+	},
+	() => {
+		const command = "git push upstream master --tags";
+		console.log( `BEGIN ${ command }` );
+		return utils.promisify( ::git.pushTags )( "upstream master" )
+			.then( () => console.log( `END ${ command }` ) );
 	}
 ];
 
-// git.addAnnotatedTag( "v1.2.0", "...contents of changelog for this version...", function( error, data ) {
-// 	console.log( "addTag", error, data );
-// } ); // git tag -a v1.2.0 -m ""
-// git.pushTags( "upstream master", function( error, data ) {
-// 	console.log( "pushTags", error, data );
-// } ); // git push upstream master --tags
 // npm publish
 // git checkout develop #skip step 8 if no develop
 // git merge master --ff-only
 // git push upstream develop
 // # Mark tag as a release in Github
 // # Add the version to the cards (as a tag) in LeanKit that were git tagged.
-
-/*
-remove mrege commits
-look for # Next
-what changes are included
-command line git diff
-*/
