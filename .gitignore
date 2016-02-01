@@ -39,3 +39,4 @@ dump.rdb
 /packages
 .shortlog
 .vscode
+.nyc_output

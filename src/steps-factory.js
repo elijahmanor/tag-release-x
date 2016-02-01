@@ -20,8 +20,8 @@ export default ( git, options ) => [
 	},
 	() => {
 		if ( options.develop ) {
-			console.log( "BEGIN git merge --ff-only upstream/develop" );
-			return utils.promisify( ::git.merge )( [ "--ff-only", "upstream/develop" ] )
+			console.log( "BEGIN git merge upstream/develop" );
+			return utils.promisify( ::git.merge )( [ "upstream/develop" ] )
 				.then( () => console.log( "END git merge --ff-only upstream/develop" ) );
 		}
 		console.log( "Skipping git merge --ff-only upstream/develop" );
@@ -52,7 +52,6 @@ export default ( git, options ) => [
 		} );
 	},
 	data => { // update CHANGELOG
-		// TODO remove merge commits
 		const CHANGELOG_PATH = "./CHANGELOG.md";
 		const version = `### ${ options.versions.newVersion }`;
 		const update = `${ version }\n\n${ data }`;
