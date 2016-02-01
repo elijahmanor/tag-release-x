@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.13.4
+
+* Update annotation message
+
 ### 1.12.4
 
 * Update changelog to be the correct description
