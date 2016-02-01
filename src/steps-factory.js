@@ -92,7 +92,6 @@ export default ( git, options ) => [
 			.then( () => console.log( `END ${ command }` ) );
 	},
 	() => {
-		// TODO Update the comment to be the changlog snippet
 		const command = `git tag -a v${ options.versions.newVersion } -m "${ options.shortlog }"`;
 		console.log( `BEGIN ${ command }` );
 		return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, options.shortlog )
