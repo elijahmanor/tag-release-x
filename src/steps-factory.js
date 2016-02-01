@@ -101,8 +101,13 @@ export default ( git, options ) => [
 	() => {
 		const command = "git push upstream master --tags";
 		console.log( `BEGIN ${ command }` );
-		return utils.promisify( ::git.pushTags )( "upstream master" )
-			.then( () => console.log( `END ${ command }` ) );
+		// return utils.promisify( ::git.pushTags )( "upstream master" )
+		// 	.then( () => console.log( `END ${ command }` ) );
+		return utils.exec( command )
+			.then( data => {
+				console.log( `END ${ command }` );
+				return data;
+			} );
 	},
 	() => {
 		const command = `npm publish`;
