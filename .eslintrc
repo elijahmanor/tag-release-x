@@ -1,8 +1,9 @@
 {
-  "extends": "leankit",
+  "parser": "babel-eslint",
+  "extends": [ "leankit", "leankit/es6" ],
   "rules": {
-    "complexity": [ 1, 5 ], // TRIAL specify the maximum cyclomatic complexity allowed in a program
-    "no-negated-condition": 1, // TRIAL disallow negated conditions
-    "no-param-reassign": [ 0, { "props": false } ] // TRIAL disallow reassignment of function parameters
+    "complexity": [ 1, 5 ],
+    "no-negated-condition": 1,
+    "no-param-reassign": [ 0, { "props": false } ]
   }
 }

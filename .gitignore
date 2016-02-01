@@ -37,3 +37,4 @@ dump.rdb
 .gulp-format-cache
 /themes
 /packages
+.shortlog

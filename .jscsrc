@@ -1,31 +1,6 @@
+
 {
 	"esnext": true,
-
-
-Error: Parse error on line 2:
-...	"esnext": true,	// Project Specific
---------------------^
-Expecting 'STRING'
-// Project Specific
-	"excludeFiles": [
-		"node_modules/**",
-		"client/{coverage,html,less}/**",
-		"client/js/lib/**",
-		"client/js/clientConfig.js",
-		"server/coverage/**",
-		"{_spec-tmp,public}/**"
-	],
-
-	// Added for JSX Support
-	"fileExtensions": [
-		".js",
-		".jsx"
-	],
-
-	"plugins": [ "jscs-jsx-rules" ],
-	"requireSpacesInsideJsxExpressionContainers": true,
-
-	// Normal jscsrc
 	"disallowKeywords": [
 		"with"
 	],
@@ -63,6 +38,9 @@ Expecting 'STRING'
 	},
 	"disallowTrailingComma": true,
 	"disallowTrailingWhitespace": true,
+	"excludeFiles": [
+		"node_modules/**"
+	],
 	"maximumLineLength": null,
 	"requireBlocksOnNewline": true,
 	"requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
@@ -116,6 +94,7 @@ Expecting 'STRING'
 	"requireSpacesInsideArrayBrackets": "all",
 	"requireSpacesInsideObjectBrackets": "all",
 	"requireSpacesInsideParentheses": "all",
+	"safeContextKeyword": "that",
 	"validateIndentation": "\t",
 	"validateLineBreaks": "LF",
 	"validateQuoteMarks": {
