@@ -55,9 +55,10 @@ export default ( git, options ) => [
 	data => { // update CHANGELOG
 		const CHANGELOG_PATH = "./CHANGELOG.md";
 		const version = `### ${ options.versions.newVersion }`;
+		const update = `${ version }\n\n${ data }`;
 		let contents = utils.readFile( CHANGELOG_PATH );
 
-		contents = `${ version }\n\n${ data }\n${ contents }`;
+		contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
 
 		utils.writeFile( CHANGELOG_PATH, contents );
 	}
