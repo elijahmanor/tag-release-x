@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.12.4
+
+* Update changelog to be the correct description
+
 ### 1.12.3
 
 * testing...
