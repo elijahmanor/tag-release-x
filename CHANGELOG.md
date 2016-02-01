@@ -1,5 +1,8 @@
 ## 1.x
 
+### 1.6.2
+
+
 ### 1.5.2
 
 * Update Changelog code to use regex
