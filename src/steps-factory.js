@@ -29,11 +29,11 @@ export default ( git, options ) => [
 		return null;
 	},
 	() => {
-		// TODO: Update with appropriate range: shortlog 1.1.5..
-		console.log( "BEGIN git --no-pager shortlog < /dev/tty" );
-		return utils.exec( "git --no-pager shortlog < /dev/tty" )
+		const command = `git --no-pager shortlog ${ options.versions.oldVersion }.. < /dev/tty`;
+		console.log( `BEGIN ${ command }` );
+		return utils.exec( command )
 			.then( data => {
-				console.log( "END git --no-pager shortlog < /dev/tty" );
+				console.log( `END ${ command }` );
 				return data;
 			} );
 	},
@@ -57,7 +57,7 @@ export default ( git, options ) => [
 		const version = `### ${ options.versions.newVersion }`;
 		let contents = utils.readFile( CHANGELOG_PATH );
 
-		contents = `${ version }\n\n${ data }\n\n${ contents }`;
+		contents = `${ version }\n\n${ data }\n${ contents }`;
 
 		utils.writeFile( CHANGELOG_PATH, contents );
 	}
