@@ -57,6 +57,7 @@ export default ( git, options ) => [
 		const update = `${ version }\n\n${ data }`;
 		let contents = utils.readFile( CHANGELOG_PATH );
 
+		options.shortlog = data;
 		contents = contents.replace( /(## .*\n)/, `$1\n${ update }` );
 		utils.writeFile( CHANGELOG_PATH, contents );
 	},
@@ -92,9 +93,9 @@ export default ( git, options ) => [
 	},
 	() => {
 		// TODO Update the comment to be the changlog snippet
-		const command = `git tag -a v${ options.versions.newVersion } -m "COMMENT"`;
+		const command = `git tag -a v${ options.versions.newVersion } -m "${ options.shortlog }"`;
 		console.log( `BEGIN ${ command }` );
-		return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, "COMMENT" )
+		return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, options.shortlog )
 			.then( () => console.log( `END ${ command }` ) );
 	},
 	() => {
