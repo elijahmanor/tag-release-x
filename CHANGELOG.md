@@ -4,16 +4,13 @@
 
 * Use exec instal of pushTags
 
-
 ### 1.9.2
 
 * 1.8.2
 
-
 ### 1.8.2
 
 * Update final steps of process
-
 
 ### 1.7.2
 

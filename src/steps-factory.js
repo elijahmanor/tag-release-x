@@ -101,8 +101,6 @@ export default ( git, options ) => [
 	() => {
 		const command = "git push upstream master --tags";
 		console.log( `BEGIN ${ command }` );
-		// return utils.promisify( ::git.pushTags )( "upstream master" )
-		// 	.then( () => console.log( `END ${ command }` ) );
 		return utils.exec( command )
 			.then( data => {
 				console.log( `END ${ command }` );
@@ -135,9 +133,13 @@ export default ( git, options ) => [
 		return null;
 	},
 	() => {
-		console.log( "BEGIN git merge --ff-only master" );
-		return utils.promisify( ::git.merge )( [ "--ff-only", "master" ] )
-			.then( () => console.log( "END git merge --ff-only master" ) );
+		if ( options.develop ) {
+			console.log( "BEGIN git merge --ff-only master" );
+			return utils.promisify( ::git.merge )( [ "--ff-only", "master" ] )
+				.then( () => console.log( "END git merge --ff-only master" ) );
+		}
+		console.log( "Skipping git merge --ff-only master" );
+		return null;
 	},
 	() => {
 		if ( options.develop ) {
