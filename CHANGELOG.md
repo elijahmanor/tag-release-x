@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.11.2
+
+* Remove commented out code
+
 ### 1.10.2
 
 * Use exec instal of pushTags
