@@ -29,7 +29,7 @@ export default ( git, options ) => [
 		return null;
 	},
 	() => {
-		const command = `git --no-pager shortlog ${ options.versions.oldVersion }.. < /dev/tty`;
+		const command = `git --no-pager shortlog v${ options.versions.oldVersion }.. < /dev/tty`;
 		console.log( `BEGIN ${ command }` );
 		return utils.exec( command )
 			.then( data => {
