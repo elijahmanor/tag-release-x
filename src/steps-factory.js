@@ -4,28 +4,27 @@ import utils from "./utils";
 
 export default ( git, options ) => [
 	() => {
-		console.log( "BEGIN git.fetch upstream master" );
+		console.log( "BEGIN git fetch upstream master" );
 		return utils.promisify( ::git.fetch )( "upstream", "master" )
-			.then( () => console.log( "END git.fetch upstream master" ) );
+			.then( () => console.log( "END git fetch upstream master" ) );
 	},
 	() => {
-		console.log( "BEGIN git.checkout master" );
+		console.log( "BEGIN git checkout master" );
 		return utils.promisify( ::git.checkout )( "master" )
-			.then( () => console.log( "END git.checkout master" ) );
+			.then( () => console.log( "END git checkout master" ) );
 	},
 	() => {
-		console.log( "BEGIN git.merge --ff-only upstream/master" );
+		console.log( "BEGIN git merge --ff-only upstream/master" );
 		return utils.promisify( ::git.merge )( [ "--ff-only", "upstream/master" ] )
-			.then( () => console.log( "END git.merge --ff-only upstream/master" ) );
+			.then( () => console.log( "END git merge --ff-only upstream/master" ) );
 	},
 	() => {
 		if ( options.develop ) {
-			console.log( "BEGIN git.merge --ff-only upstream/develop" );
+			console.log( "BEGIN git merge --ff-only upstream/develop" );
 			return utils.promisify( ::git.merge )( [ "--ff-only", "upstream/develop" ] )
-				.then( () => console.log( "END git.merge --ff-only upstream/develop" ) );
+				.then( () => console.log( "END git merge --ff-only upstream/develop" ) );
 		}
-
-		console.log( "Skipping git.merge --ff-only upstream/develop" );
+		console.log( "Skipping git merge --ff-only upstream/develop" );
 		return null;
 	},
 	() => {
@@ -58,18 +57,22 @@ export default ( git, options ) => [
 		const update = `${ version }\n\n${ data }`;
 		let contents = utils.readFile( CHANGELOG_PATH );
 
-		contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
-
+		contents = contents.replace( /(## .*\n)/, `$1\n${ update }` );
 		utils.writeFile( CHANGELOG_PATH, contents );
+	},
+	() => {
+		console.log( "BEGIN git add CHANGELOG.md package.json" );
+		return utils.promisify( ::git.add )( [ "CHANGELOG.md", "package.json" ] )
+			.then( () => console.log( "END git add CHANGELOG.md package.json" ) );
+	},
+	() => {
+		const command = `git commit -m "${ options.versions.newVersion }"`;
+		console.log( `BEGIN ${ command }` );
+		return utils.promisify( ::git.commit )( options.versions.newVersion )
+			.then( () => console.log( `END ${ command }` ) );
 	}
 ];
 
-// git.add( [ "CHANGELOG", "package.json" ], function( error, data ) {
-// 	console.log( "add", error, data );
-// } ); // git add package.json CHANGELOG.md
-// git.commit( "1.2.0", function( error, data ) {
-// 	console.log( "commit", error, data );
-// } ); // git commit -m "1.2.0"
 // git.addAnnotatedTag( "v1.2.0", "...contents of changelog for this version...", function( error, data ) {
 // 	console.log( "addTag", error, data );
 // } ); // git tag -a v1.2.0 -m ""

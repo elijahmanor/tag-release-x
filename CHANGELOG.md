@@ -4,7 +4,6 @@
 
 * Update Changelog code to use regex
 
-
 ### 1.4.2
 
 * This is a test
