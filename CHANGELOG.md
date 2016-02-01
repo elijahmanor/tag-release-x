@@ -1,5 +1,10 @@
 ## 1.x
 
+### 1.5.2
+
+* Update Changelog code to use regex
+
+
 ### 1.4.2
 
 * This is a test
