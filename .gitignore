@@ -38,3 +38,4 @@ dump.rdb
 /themes
 /packages
 .shortlog
+.vscode
