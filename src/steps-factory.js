@@ -103,12 +103,48 @@ export default ( git, options ) => [
 		console.log( `BEGIN ${ command }` );
 		return utils.promisify( ::git.pushTags )( "upstream master" )
 			.then( () => console.log( `END ${ command }` ) );
+	},
+	() => {
+		const command = `npm publish`;
+		console.log( `BEGIN ${ command }` );
+		return utils.prompt( [ {
+			type: "confirm",
+			name: "publish",
+			message: "Do you want to publish this package",
+			default: true
+		} ] ).then( answers => {
+			if ( answers.publish ) {
+				return utils.exec( command )
+					.then( data => console.log( `END ${ command }` ) );
+			}
+			return true;
+		} );
+	},
+	() => {
+		if ( options.develop ) {
+			console.log( "BEGIN git checkout develop" );
+			return utils.promisify( ::git.checkout )( "develop" )
+				.then( () => console.log( "END git checkout develop" ) );
+		}
+		console.log( "Skipping git checkout develop" );
+		return null;
+	},
+	() => {
+		console.log( "BEGIN git merge --ff-only master" );
+		return utils.promisify( ::git.merge )( [ "--ff-only", "master" ] )
+			.then( () => console.log( "END git merge --ff-only master" ) );
+	},
+	() => {
+		if ( options.develop ) {
+			console.log( "BEGIN git push upstream develop" );
+			return utils.promisify( ::git.push )( "upstream", "develop" )
+				.then( () => console.log( "END git push upstream develop" ) );
+		}
+		console.log( "Skipping git push upstream develop" );
+		return null;
+	},
+	() => {
+		// # Mark tag as a release in Github
+		// # Add the version to the cards (as a tag) in LeanKit that were git tagged.
 	}
 ];
-
-// npm publish
-// git checkout develop #skip step 8 if no develop
-// git merge master --ff-only
-// git push upstream develop
-// # Mark tag as a release in Github
-// # Add the version to the cards (as a tag) in LeanKit that were git tagged.
