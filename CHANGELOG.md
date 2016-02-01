@@ -1,5 +1,10 @@
 ## 1.x
 
+### 1.10.2
+
+* Use exec instal of pushTags
+
+
 ### 1.9.2
 
 * 1.8.2
