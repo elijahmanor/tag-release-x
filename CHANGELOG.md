@@ -1,5 +1,10 @@
 ## 1.x
 
+### 1.9.2
+
+* 1.8.2
+
+
 ### 1.8.2
 
 * Update final steps of process
