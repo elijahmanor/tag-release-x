@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.15.4
+
+* Pull out sequence steps into their own export functions
+
 ### 1.14.4
 
 * Remove old comment in code
