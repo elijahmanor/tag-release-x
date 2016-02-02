@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.17.4
+
+* Rename steps to sequence-steps
+
 ### 1.16.4
 
 * Add github release sequence
