@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.19.4
+
+* Switch to github4
+
 ### 1.18.4
 
 * Add console.log statements for debugging
