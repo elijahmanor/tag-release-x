@@ -177,12 +177,15 @@ export function markTagAsRelease( [ git, options ] ) {
 		host: "api.github.com",
 		timeout: 5000
 	} );
+	console.log( "1" );
 	github.authenticate( {
 		type: "basic",
 		username: "elijahmanor",
 		password: "dog$not"
 	} );
+	console.log( "2" );
 	const createRelease = nodefn.lift( github.releases.createRelease );
+	console.log( "3", createRelease );
 	return createRelease( {
 		owner: "elijahmanor",
 		repo: "tag-release",
