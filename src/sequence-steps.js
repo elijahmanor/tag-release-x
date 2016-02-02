@@ -2,7 +2,7 @@
 
 import utils from "./utils";
 import { findLast } from "lodash";
-import { GitHubApi } from "github";
+import { GitHubApi } from "github4";
 import nodefn from "when/node";
 
 export function gitFetchUpstreamMaster( [ git, options ] ) {
