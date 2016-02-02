@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.16.4
+
+* Add github release sequence
+
 ### 1.15.4
 
 * Pull out sequence steps into their own export functions
