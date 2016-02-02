@@ -2,6 +2,8 @@
 
 import utils from "./utils";
 import { findLast } from "lodash";
+import { github } from "github";
+import nodefn from "when/node";
 
 export function gitFetchUpstreamMaster( [ git, options ] ) {
 	console.log( "BEGIN git fetch upstream master" );
@@ -40,7 +42,6 @@ export function gitShortlog( [ git, options ] ) {
 			.then( data => {
 				console.log( `END ${ command }` );
 				options.shortlog = data;
-				// return data;
 			} );
 	} );
 }
@@ -58,7 +59,6 @@ export function updateShortlog( [ git, options ] ) {
 			return utils.editor( options.shortlog )
 				.then( data => options.shortlog = data );
 		}
-		// return data;
 	} );
 }
 
@@ -170,7 +170,22 @@ export function gitPushUpstreamDevelop( [ git, options ] ) {
 
 export function markTagAsRelease( [ git, options ] ) {
 	console.log( "BEGIN mark tag as release" );
-	console.log( "END mark tag as release" );
+	github.authenticate( {
+		type: "basic",
+		username: "elijahmanor",
+		password: "dog$not"
+	} );
+	const createRelease = nodefn.lift( github.releases.createRelease );
+	return createRelease( {
+		owner: "elijahmanor",
+		repo: "tag-release",
+		target_commitish: "master", // eslint-disable-line camelcase
+		tag_name: options.release.newVersion, // eslint-disable-line camelcase
+		name: options.release.newVersion,
+		body: options.shortlog
+	}, err => {
+		console.log( "END mark tag as release" );
+	} );
 }
 
 export default [
