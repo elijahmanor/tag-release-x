@@ -2,7 +2,7 @@
 
 import utils from "./utils";
 import { findLast } from "lodash";
-import { github } from "github";
+import { GitHubApi } from "github";
 import nodefn from "when/node";
 
 export function gitFetchUpstreamMaster( [ git, options ] ) {
@@ -170,6 +170,13 @@ export function gitPushUpstreamDevelop( [ git, options ] ) {
 
 export function markTagAsRelease( [ git, options ] ) {
 	console.log( "BEGIN mark tag as release" );
+	const github = new GitHubApi( {
+		version: "3.0.0",
+		debug: true,
+		protocol: "https",
+		host: "api.github.com",
+		timeout: 5000
+	} );
 	github.authenticate( {
 		type: "basic",
 		username: "elijahmanor",
