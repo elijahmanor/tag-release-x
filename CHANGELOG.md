@@ -1,5 +1,9 @@
 ## 1.x
 
+### 1.18.4
+
+* Add console.log statements for debugging
+
 ### 1.17.4
 
 * Rename steps to sequence-steps
