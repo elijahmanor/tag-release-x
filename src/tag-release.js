@@ -3,8 +3,8 @@
 import simpleGitFactory from "simple-git";
 import utils from "./utils";
 import VersionManager from "version-manage";
-import pipeline from "when/pipeline";
-import stepsFactory from "./steps-factory";
+import sequence from "when/sequence";
+import sequenceSteps from "./sequence-steps";
 import { merge } from "lodash";
 
 function updateVersion( release ) {
@@ -28,5 +28,9 @@ export default options => {
 	const { versions } = options;
 	console.log( `Updated package.json from ${ versions.oldVersion } to ${ versions.newVersion }` );
 
-	pipeline( stepsFactory( git, options ) ).then( () => console.log( "Finished" ) );
+	sequence( sequenceSteps, [ git, options ] )
+		.then( () => {
+			console.log( "Finished" );
+			console.log( "Remember to add the version to the cards (as a tag) in LeanKit that were git tagged." );
+		} );
 };
