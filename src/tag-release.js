@@ -29,8 +29,5 @@ export default options => {
 	console.log( `Updated package.json from ${ versions.oldVersion } to ${ versions.newVersion }` );
 
 	sequence( sequenceSteps, [ git, options ] )
-		.then( () => {
-			console.log( "Finished" );
-			console.log( "Remember to add the version to the cards (as a tag) in LeanKit that were git tagged." );
-		} );
+		.then( () => console.log( "Finished" ) );
 };

@@ -22,7 +22,7 @@ const sequenceSteps = [
 	gitCheckoutDevelop,
 	gitMergeMaster,
 	gitPushUpstreamDevelop,
-	// markTagAsRelease,
+	markTagAsRelease,
 	gitPushOriginMaster
 ];
 
@@ -151,10 +151,7 @@ export function gitPushUpstreamMaster( [ git, options ] ) {
 	const command = "git push upstream master --tags";
 	utils.log.begin( command );
 	return utils.exec( command )
-		.then( data => {
-			utils.log.end();
-			return data;
-		} );
+		.then( data => utils.log.end() );
 }
 
 export function npmPublish( [ git, options ] ) {
@@ -167,10 +164,7 @@ export function npmPublish( [ git, options ] ) {
 		default: true
 	} ] ).then( answers => {
 		if ( answers.publish ) {
-			return utils.exec( command )
-				.then( data => {
-					utils.log.end();
-				} );
+			return utils.exec( command ).then( data => utils.log.end() );
 		}
 		utils.log.end();
 	} );
@@ -212,7 +206,7 @@ export function gitPushUpstreamDevelop( [ git, options ] ) {
 export function markTagAsRelease( [ git, options ] ) {
 	const command = `github create release`;
 	utils.log.begin( command );
-	// console.log( "BEGIN mark tag as release" );
+	console.log( "BEGIN mark tag as release" );
 	const github = new GitHubApi( {
 		version: "3.0.0",
 		debug: true,
@@ -220,25 +214,35 @@ export function markTagAsRelease( [ git, options ] ) {
 		host: "api.github.com",
 		timeout: 5000
 	} );
-	// console.log( "1" );
-	github.authenticate( {
-		type: "basic",
-		username: "elijahmanor",
-		password: "dog$not"
-	} );
-	// console.log( "2" );
-	const createRelease = nodefn.lift( github.releases.createRelease );
-	// console.log( "3", createRelease );
-	return createRelease( {
-		owner: "elijahmanor",
-		repo: "tag-release",
-		target_commitish: "master", // eslint-disable-line camelcase
-		tag_name: options.release.newVersion, // eslint-disable-line camelcase
-		name: options.release.newVersion,
-		body: options.shortlog
-	}, err => {
-		// console.log( "END mark tag as release" );
-		utils.log.end();
+	console.log( "1" );
+	return utils.prompt( [ {
+		type: "input",
+		name: "username",
+		message: "GitHub username"
+	}, {
+		type: "password",
+		name: "password",
+		message: "GitHub password"
+	} ] ).then( answers => {
+		console.log( "2" );
+		github.authenticate( {
+			type: "basic",
+			username: answers.username,
+			password: answers.password
+		} );
+		console.log( "3" );
+		const createRelease = nodefn.lift( github.releases.createRelease );
+		console.log( "4", createRelease );
+		return createRelease( {
+			owner: "elijahmanor",
+			repo: "tag-release",
+			target_commitish: "master", // eslint-disable-line camelcase
+			tag_name: options.release.newVersion, // eslint-disable-line camelcase
+			name: options.release.newVersion,
+			body: options.shortlog
+		}, err => {
+			utils.log.end();
+		} );
 	} );
 }
 
