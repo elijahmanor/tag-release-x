@@ -1,4 +1,8 @@
-## 1.x
+## 2.x
+
+### Next
+
+Initial stable version
 
 ### 2.37.0
 
