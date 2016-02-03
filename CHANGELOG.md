@@ -1,5 +1,9 @@
 ## 1.x
 
+### 2.25.11
+
+* Add git push origin master
+
 ### 2.24.11
 
 * Make git diff colorized
