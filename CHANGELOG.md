@@ -1,5 +1,9 @@
 ## 1.x
 
+### 2.26.11
+
+* Add back markTagAsRelease
+
 ### 2.25.11
 
 * Add git push origin master
