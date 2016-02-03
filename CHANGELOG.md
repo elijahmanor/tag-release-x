@@ -1,5 +1,9 @@
 ## 1.x
 
+### 2.37.0
+
+Update formatting
+
 ### 2.36.23
 
 * Manually update the changelog
