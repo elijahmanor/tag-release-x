@@ -2,20 +2,16 @@
 
 import simpleGitFactory from "simple-git";
 import utils from "./utils";
-import VersionManager from "version-manage";
+import semver from "semver";
 import sequence from "when/sequence";
 import sequenceSteps from "./sequence-steps";
 import { merge } from "lodash";
 
 function updateVersion( release ) {
 	const packageJson = utils.readJSONFile( "./package.json" );
-	const versionManager = new VersionManager( packageJson.version );
-	const oldVersion = versionManager.version;
+	const oldVersion = packageJson.version;
 
-	versionManager.increment( release );
-	console.log( "versionManager.parsed", versionManager.parsed );
-	versionManager.parsed.patch = 777;
-	const newVersion = packageJson.version = versionManager.version;
+	const newVersion = packageJson.version = semver.inc( oldVersion, release );
 	utils.writeJSONFile( "./package.json", packageJson );
 
 	return { oldVersion, newVersion };
