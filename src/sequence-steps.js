@@ -5,6 +5,7 @@ import { findLast } from "lodash";
 import { GitHubApi } from "github4";
 import nodefn from "when/node";
 
+const CHANGELOG_PATH = "./CHANGELOG.md";
 const sequenceSteps = [
 	gitFetchUpstreamMaster,
 	gitCheckoutMaster,
@@ -59,22 +60,32 @@ export function gitMergeUpstreamDevelop( [ git, options ] ) {
 }
 
 export function gitShortlog( [ git, options ] ) {
-	return utils.promisify( ::git.tags )().then( tags => {
-		const latestRelease = findLast( tags.all, tag => tag !== "" );
-		const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;
-		utils.log.begin( command );
-		return utils.exec( command )
-			.then( data => {
-				options.shortlog = data;
-				utils.log.end();
-			} );
-	} );
+	let contents = utils.readFile( CHANGELOG_PATH );
+
+	if ( ~contents.indexOf( "### Next" ) ) {
+		contents = contents.replace( /### Next([^#]+)/, ( match, submatch ) => {
+			options.shortlog = submatch.trim();
+			return "";
+		} );
+		utils.writeFile( CHANGELOG_PATH, contents );
+	} else {
+		return utils.promisify( ::git.tags )().then( tags => {
+			const latestRelease = findLast( tags.all, tag => tag !== "" );
+			const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;
+			utils.log.begin( command );
+			return utils.exec( command )
+				.then( data => {
+					options.shortlog = data;
+					utils.log.end();
+				} );
+		} );
+	}
 }
 
 export function updateShortlog( [ git, options ] ) {
 	// TODO: Clean out all the merged entries
 	const command = "shortlog preview";
-	console.log( "Here is a preview of your log", options.shortlog );
+	console.log( "Here is a preview of your log: \n", options.shortlog );
 	utils.log.begin( command );
 	return utils.prompt( [ {
 		type: "confirm",
@@ -85,7 +96,7 @@ export function updateShortlog( [ git, options ] ) {
 		if ( answers.shortlog ) {
 			return utils.editor( options.shortlog )
 				.then( data => {
-					options.shortlog = data;
+					options.shortlog = data.trim();
 					utils.log.end();
 				} );
 		}
@@ -93,7 +104,6 @@ export function updateShortlog( [ git, options ] ) {
 }
 
 export function updateChangelog( [ git, options ] ) {
-	const CHANGELOG_PATH = "./CHANGELOG.md";
 	const version = `### ${ options.versions.newVersion }`;
 	const update = `${ version }\n\n${ options.shortlog }`;
 
@@ -101,7 +111,7 @@ export function updateChangelog( [ git, options ] ) {
 	utils.log.begin( command );
 	let contents = utils.readFile( CHANGELOG_PATH );
 
-	contents = contents.replace( /(## .*\n)/, `$1\n${ update }` );
+	contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
 	utils.writeFile( CHANGELOG_PATH, contents );
 	utils.log.end();
 }
