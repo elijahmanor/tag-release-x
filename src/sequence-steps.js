@@ -50,12 +50,11 @@ export function gitMergeUpstreamMaster( [ git, options ] ) {
 
 export function gitMergeUpstreamDevelop( [ git, options ] ) {
 	const command = "git merge upstream/develop";
-	utils.log.begin( command );
 	if ( options.develop ) {
+		utils.log.begin( command );
 		return utils.promisify( ::git.merge )( [ "upstream/develop" ] )
 			.then( () => utils.log.end() );
 	}
-	utils.log.end();
 	return null;
 }
 
@@ -86,13 +85,13 @@ export function updateShortlog( [ git, options ] ) {
 	// TODO: Clean out all the merged entries
 	const command = "shortlog preview";
 	console.log( "Here is a preview of your log: \n", options.shortlog );
-	utils.log.begin( command );
 	return utils.prompt( [ {
 		type: "confirm",
 		name: "shortlog",
 		message: "Would you like to edit your log",
 		default: true
 	} ] ).then( answers => {
+		utils.log.begin( command );
 		if ( answers.shortlog ) {
 			return utils.editor( options.shortlog )
 				.then( data => {
@@ -121,13 +120,13 @@ export function gitDiff( [ git, options ] ) {
 	return utils.exec( command )
 		.then( data => {
 			console.log( data );
-			utils.log.begin( command );
 			return utils.prompt( [ {
 				type: "confirm",
 				name: "proceed",
 				message: "Are you okay with this diff",
 				default: true
 			} ] ).then( answers => {
+				utils.log.begin( command );
 				utils.log.end();
 				if ( !answers.proceed ) {
 					process.exit( 0 ); // eslint-disable-line no-process-exit
@@ -166,13 +165,13 @@ export function gitPushUpstreamMaster( [ git, options ] ) {
 
 export function npmPublish( [ git, options ] ) {
 	const command = `npm publish`;
-	utils.log.begin( command );
 	return utils.prompt( [ {
 		type: "confirm",
 		name: "publish",
 		message: "Do you want to publish this package",
 		default: true
 	} ] ).then( answers => {
+		utils.log.begin( command );
 		if ( answers.publish ) {
 			return utils.exec( command ).then( data => utils.log.end() );
 		}
@@ -193,23 +192,21 @@ export function gitCheckoutDevelop( [ git, options ] ) {
 
 export function gitMergeMaster( [ git, options ] ) {
 	const command = `git merge --ff-only master`;
-	utils.log.begin( command );
 	if ( options.develop ) {
+		utils.log.begin( command );
 		return utils.promisify( ::git.merge )( [ "--ff-only", "master" ] )
 			.then( () => utils.log.end() );
 	}
-	utils.log.end();
 	return null;
 }
 
 export function gitPushUpstreamDevelop( [ git, options ] ) {
 	const command = `git push upstream develop`;
-	utils.log.begin( command );
 	if ( options.develop ) {
+		utils.log.begin( command );
 		return utils.promisify( ::git.push )( "upstream", "develop" )
 			.then( () => utils.log.end() );
 	}
-	utils.log.end();
 	return null;
 }
 
