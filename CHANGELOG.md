@@ -10,27 +10,12 @@
 
 ### 2.34.16
 
-Add back markTagAsRelease
-      2.26.11
-      Comment out markTagAsRelease for now
-      2.33.12
-      2.34.14
-      Add logic to use Next or Commits from last Tag
-      2.34.15
-      Clean up logs
+* Add back markTagAsRelease
+* Another test
 
 ### 2.34.15
 
 * Make git diff colorized
-* 2.24.11
-* Add git push origin master
-* 2.25.11
-* Add back markTagAsRelease
-* 2.26.11
-* Comment out markTagAsRelease for now
-* 2.33.12
-* 2.34.14
-* Add logic to use Next or Commits from last Tag
 
 ### 2.34.14
 
