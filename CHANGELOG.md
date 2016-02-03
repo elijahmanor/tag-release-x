@@ -1,5 +1,10 @@
 ## 1.x
 
+### 2.36.23
+
+* Manually update the changelog
+* Switch to semver instead of versionmanager
+
 ### 2.36.22
 
 * Switch to exec instead of git library for tags
