@@ -1,13 +1,8 @@
 ## 1.x
 
-### 2.26.11
-
-* Add back markTagAsRelease
-
-### 2.25.11
+### 2.33.12
 
 * Add git push origin master
-
 ### 2.24.11
 
 * Make git diff colorized
