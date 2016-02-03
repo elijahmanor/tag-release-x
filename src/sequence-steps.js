@@ -22,7 +22,8 @@ const sequenceSteps = [
 	gitCheckoutDevelop,
 	gitMergeMaster,
 	gitPushUpstreamDevelop,
-	// markTagAsRelease
+	// markTagAsRelease,
+	gitPushOriginMaster
 ];
 
 export function gitFetchUpstreamMaster( [ git, options ] ) {
@@ -239,6 +240,13 @@ export function markTagAsRelease( [ git, options ] ) {
 		// console.log( "END mark tag as release" );
 		utils.log.end();
 	} );
+}
+
+export function gitPushOriginMaster( [ git, options ] ) {
+	const command = `git push upstream master`;
+	utils.log.begin( command );
+	return utils.promisify( ::git.push )( "origin", "master" )
+		.then( () => utils.log.end() );
 }
 
 export default sequenceSteps;
