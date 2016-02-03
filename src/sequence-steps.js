@@ -22,7 +22,7 @@ const sequenceSteps = [
 	gitCheckoutDevelop,
 	gitMergeMaster,
 	gitPushUpstreamDevelop,
-	markTagAsRelease,
+	// markTagAsRelease,
 	gitPushOriginMaster
 ];
 
@@ -212,7 +212,10 @@ export function markTagAsRelease( [ git, options ] ) {
 		debug: true,
 		protocol: "https",
 		host: "api.github.com",
-		timeout: 5000
+		timeout: 5000,
+		headers: {
+			"user-agent": "elijahmanor/tag-release"
+		}
 	} );
 	console.log( "1" );
 	return utils.prompt( [ {

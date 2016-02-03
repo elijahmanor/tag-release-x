@@ -13,6 +13,8 @@ function updateVersion( release ) {
 	const oldVersion = versionManager.version;
 
 	versionManager.increment( release );
+	console.log( "versionManager.parsed", versionManager.parsed );
+	versionManager.parsed.patch = 777;
 	const newVersion = packageJson.version = versionManager.version;
 	utils.writeJSONFile( "./package.json", packageJson );
 
