@@ -1,6 +1,6 @@
 ## 1.x
 
-### Release
+### Next
 
 * Switch to exec instead of git library for tags
 
