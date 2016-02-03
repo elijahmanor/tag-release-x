@@ -1,6 +1,6 @@
 ## 1.x
 
-### Next
+### 2.36.22
 
 * Switch to exec instead of git library for tags
 
