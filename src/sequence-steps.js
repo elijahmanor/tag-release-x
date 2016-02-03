@@ -73,8 +73,8 @@ export function gitShortlog( [ git, options ] ) {
 export function updateShortlog( [ git, options ] ) {
 	// TODO: Clean out all the merged entries
 	const command = "shortlog preview";
-	utils.log.begin( command );
 	console.log( "Here is a preview of your log", options.shortlog );
+	utils.log.begin( command );
 	return utils.prompt( [ {
 		type: "confirm",
 		name: "shortlog",
@@ -106,10 +106,11 @@ export function updateChangelog( [ git, options ] ) {
 }
 
 export function gitDiff( [ git, options ] ) {
-	const command = "git diff";
-	utils.log.begin( command );
-	return utils.promisify( ::git.diff )()
+	const command = "git diff --color CHANGELOG.md package.json";
+	return utils.exec( command )
 		.then( data => {
+			console.log( data );
+			utils.log.begin( command );
 			return utils.prompt( [ {
 				type: "confirm",
 				name: "proceed",
@@ -117,10 +118,9 @@ export function gitDiff( [ git, options ] ) {
 				default: true
 			} ] ).then( answers => {
 				utils.log.end();
-				if ( answers.proceed ) {
-					return true;
+				if ( !answers.proceed ) {
+					process.exit( 0 ); // eslint-disable-line no-process-exit
 				}
-				process.exit( 0 ); // eslint-disable-line no-process-exit
 			} );
 		} );
 }
