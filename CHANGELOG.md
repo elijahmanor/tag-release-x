@@ -1,5 +1,10 @@
 ## 1.x
 
+### 2.24.4
+
+* 2.23.4
+* Replace logging system
+
 ### 2.23.4
 
 * Switch to github4
