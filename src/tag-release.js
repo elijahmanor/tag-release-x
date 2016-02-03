@@ -10,8 +10,8 @@ import { merge } from "lodash";
 function updateVersion( release ) {
 	const packageJson = utils.readJSONFile( "./package.json" );
 	const oldVersion = packageJson.version;
-
 	const newVersion = packageJson.version = semver.inc( oldVersion, release );
+
 	utils.writeJSONFile( "./package.json", packageJson );
 
 	return { oldVersion, newVersion };
