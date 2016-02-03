@@ -3,6 +3,7 @@ import fs from "fs";
 import childProcess from "child_process";
 import inquirer from "inquirer";
 import editor from "editor";
+import logUpdate from "log-update";
 
 export default {
 	readFile( path ) {
@@ -67,5 +68,16 @@ export default {
 				}
 			} );
 		} );
+	},
+	log: {
+		lastLog: "",
+		begin( text ) {
+			logUpdate( `${ text } ☐` );
+			this.lastLog = text;
+		},
+		end() {
+			logUpdate( `${ this.lastLog } ☑` );
+			logUpdate.done();
+		}
 	}
 };
