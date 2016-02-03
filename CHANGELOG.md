@@ -1,5 +1,9 @@
 ## 1.x
 
+### Release
+
+* Switch to exec instead of git library for tags
+
 ### 2.36.21
 
 * Clean up logs

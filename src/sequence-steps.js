@@ -68,8 +68,9 @@ export function gitShortlog( [ git, options ] ) {
 		} );
 		utils.writeFile( CHANGELOG_PATH, contents );
 	} else {
-		return utils.promisify( ::git.tags )().then( tags => {
-			const latestRelease = findLast( tags.all, tag => tag !== "" );
+		return utils.exec( "git tag -l" ).then( tags => {
+			tags = tags.trim().split( "\n" );
+			const latestRelease = tags[ tags.length - 1 ];
 			const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;
 			utils.log.begin( command );
 			return utils.exec( command )
