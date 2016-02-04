@@ -21,7 +21,7 @@ export default {
 		return fs.writeFileSync( path, content, "utf-8" );
 	},
 	writeJSONFile( path, content ) {
-		const NUMBER_OF_SPACES = 4;
+		const NUMBER_OF_SPACES = 2;
 		content = `${ JSON.stringify( content, null, NUMBER_OF_SPACES ) }\n`;
 		return this.writeFile( path, content );
 	},
