@@ -1,9 +1,9 @@
 /* eslint no-console: 0 */
 
 import utils from "./utils";
-import { findLast } from "lodash";
 import { GitHubApi } from "github4";
 import nodefn from "when/node";
+import semver from "semver";
 
 const CHANGELOG_PATH = "./CHANGELOG.md";
 const sequenceSteps = [
@@ -11,6 +11,7 @@ const sequenceSteps = [
 	gitCheckoutMaster,
 	gitMergeUpstreamMaster,
 	gitMergeUpstreamDevelop,
+	updateVersion,
 	gitShortlog,
 	updateShortlog,
 	updateChangelog,
@@ -28,10 +29,9 @@ const sequenceSteps = [
 ];
 
 export function gitFetchUpstreamMaster( [ git, options ] ) {
-	const command = "git fetch upstream master";
+	const command = "git fetch upstream master --tags";
 	utils.log.begin( command );
-	return utils.promisify( ::git.fetch )( "upstream", "master" )
-		.then( () => utils.log.end() );
+	return utils.exec( command ).then( () => utils.log.end() );
 }
 
 export function gitCheckoutMaster( [ git, options ] ) {
@@ -58,6 +58,15 @@ export function gitMergeUpstreamDevelop( [ git, options ] ) {
 	return null;
 }
 
+export function updateVersion( [ git, options ] ) {
+	const packageJson = utils.readJSONFile( "./package.json" );
+	const oldVersion = packageJson.version;
+	const newVersion = packageJson.version = semver.inc( oldVersion, options.release );
+	utils.writeJSONFile( "./package.json", packageJson );
+	options.versions = { oldVersion, newVersion };
+	console.log( `Updated package.json from ${ oldVersion } to ${ newVersion }` );
+}
+
 export function gitShortlog( [ git, options ] ) {
 	let contents = utils.readFile( CHANGELOG_PATH );
 
@@ -68,7 +77,7 @@ export function gitShortlog( [ git, options ] ) {
 		} );
 		utils.writeFile( CHANGELOG_PATH, contents );
 	} else {
-		return utils.exec( "git tag -l" ).then( tags => {
+		return utils.exec( "git tag --sort=v:refname" ).then( tags => {
 			tags = tags.trim().split( "\n" );
 			const latestRelease = tags[ tags.length - 1 ];
 			const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;

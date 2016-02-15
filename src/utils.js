@@ -4,6 +4,7 @@ import childProcess from "child_process";
 import inquirer from "inquirer";
 import editor from "editor";
 import logUpdate from "log-update";
+import detectIndent from "detect-indent";
 
 export default {
 	readFile( path ) {
@@ -21,8 +22,9 @@ export default {
 		return fs.writeFileSync( path, content, "utf-8" );
 	},
 	writeJSONFile( path, content ) {
-		const NUMBER_OF_SPACES = 2;
-		content = `${ JSON.stringify( content, null, NUMBER_OF_SPACES ) }\n`;
+		const file = fs.readFileSync( path, "utf-8" );
+		const indent = detectIndent( file ).indent || "  ";
+		content = `${ JSON.stringify( content, null, indent ) }\n`;
 		return this.writeFile( path, content );
 	},
 	promisify( method ) {
