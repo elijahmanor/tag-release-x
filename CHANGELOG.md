@@ -1,8 +1,12 @@
-## 1.x
+## 3.x
+
+### 3.10.0
+
+* This is a test
 
 ### 3.9.0
 
-**BREAKING**
+* This is another test
 * Sending string keys for enumerated values
 
 ### 1.13.1

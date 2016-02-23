@@ -37,14 +37,14 @@ export function gitFetchUpstreamMaster( [ git, options ] ) {
 export function gitCheckoutMaster( [ git, options ] ) {
 	const command = "git checkout master";
 	utils.log.begin( command );
-	return utils.promisify( ::git.checkout )( "master" )
+	return nodefn.lift( ::git.checkout )( "master" )
 		.then( () => utils.log.end() );
 }
 
 export function gitMergeUpstreamMaster( [ git, options ] ) {
 	const command = "git merge --ff-only upstream/master";
 	utils.log.begin( command );
-	return utils.promisify( ::git.merge )( [ "--ff-only", "upstream/master" ] )
+	return nodefn.lift( ::git.merge )( [ "--ff-only", "upstream/master" ] )
 		.then( () => utils.log.end() );
 }
 
@@ -52,7 +52,7 @@ export function gitMergeUpstreamDevelop( [ git, options ] ) {
 	const command = "git merge upstream/develop";
 	if ( options.develop ) {
 		utils.log.begin( command );
-		return utils.promisify( ::git.merge )( [ "upstream/develop" ] )
+		return nodefn.lift( ::git.merge )( [ "upstream/develop" ] )
 			.then( () => utils.log.end() );
 	}
 	return null;
@@ -65,6 +65,10 @@ export function updateVersion( [ git, options ] ) {
 	utils.writeJSONFile( "./package.json", packageJson );
 	options.versions = { oldVersion, newVersion };
 	console.log( `Updated package.json from ${ oldVersion } to ${ newVersion }` );
+}
+
+export function removeMergeCommits( data ) {
+	return data.replace( /.*Merge pull request #.*\n/g, "" );
 }
 
 export function gitShortlog( [ git, options ] ) {
@@ -82,17 +86,16 @@ export function gitShortlog( [ git, options ] ) {
 			const latestRelease = tags[ tags.length - 1 ];
 			const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;
 			utils.log.begin( command );
-			return utils.exec( command )
-				.then( data => {
-					options.shortlog = data;
-					utils.log.end();
-				} );
+			return utils.exec( command ).then( data => {
+				data = removeMergeCommits( data );
+				options.shortlog = data;
+				utils.log.end();
+			} );
 		} );
 	}
 }
 
 export function updateShortlog( [ git, options ] ) {
-	// TODO: Clean out all the merged entries
 	const command = "shortlog preview";
 	console.log( "Here is a preview of your log: \n", options.shortlog );
 	return utils.prompt( [ {
@@ -115,12 +118,15 @@ export function updateShortlog( [ git, options ] ) {
 export function updateChangelog( [ git, options ] ) {
 	const version = `### ${ options.versions.newVersion }`;
 	const update = `${ version }\n\n${ options.shortlog }`;
-
 	const command = "update changelog";
 	utils.log.begin( command );
 	let contents = utils.readFile( CHANGELOG_PATH );
-
-	contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
+	if ( options.release === "major" ) {
+		const wildcardVersion = options.versions.newVersion.replace( ".0.0", ".x" );
+		contents = `${ wildcardVersion }\n\n${ update }\n` + contents;
+	} else {
+		contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
+	}
 	utils.writeFile( CHANGELOG_PATH, contents );
 	utils.log.end();
 }
