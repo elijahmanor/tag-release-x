@@ -1,5 +1,11 @@
 ## 3.x
 
+### 3.12.0
+
+* Update shortlog to log
+* Add README and change to git log
+* Add unit tests
+
 ### 3.10.0
 
 * This is a test

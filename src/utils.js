@@ -64,7 +64,9 @@ export default {
 			this.writeFile( tempFilePath, data );
 			editor( tempFilePath, ( code, sig ) => {
 				if ( code === 0 ) {
-					resolve( this.readFile( tempFilePath ) );
+					const contents = this.readFile( tempFilePath );
+					fs.unlinkSync( tempFilePath );
+					resolve( contents );
 				} else {
 					reject( `Unable to edit ${ tempFilePath }` );
 				}

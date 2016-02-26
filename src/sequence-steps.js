@@ -67,10 +67,6 @@ export function updateVersion( [ git, options ] ) {
 	console.log( `Updated package.json from ${ oldVersion } to ${ newVersion }` );
 }
 
-export function removeMergeCommits( data ) {
-	return data.replace( /.*Merge pull request #.*\n/g, "" );
-}
-
 export function gitLog( [ git, options ] ) {
 	let contents = utils.readFile( CHANGELOG_PATH );
 
@@ -84,11 +80,10 @@ export function gitLog( [ git, options ] ) {
 		return utils.exec( "git tag --sort=v:refname" ).then( tags => {
 			tags = tags.trim().split( "\n" );
 			const latestRelease = tags[ tags.length - 1 ];
-			const command = `git log --date-order --pretty=format:'%s' ${ latestRelease }.. < /dev/tty`;
+			const command = `git --no-pager log --no-merges --date-order --pretty=format:'%s' ${ latestRelease }..`;
 			utils.log.begin( command );
 			return utils.exec( command ).then( data => {
-				data = removeMergeCommits( data );
-				data = data.replace( /^(.+)$/gm, "* $1" );
+				data = data.trim().replace( /^(.+)$/gm, "* $1" );
 				options.log = data;
 				utils.log.end();
 			} );
@@ -98,7 +93,7 @@ export function gitLog( [ git, options ] ) {
 
 export function updateLog( [ git, options ] ) {
 	const command = "log preview";
-	console.log( "Here is a preview of your log: \n", options.shortlog );
+	console.log( `Here is a preview of your log: \n${ options.log }` );
 	return utils.prompt( [ {
 		type: "confirm",
 		name: "log",
@@ -169,7 +164,7 @@ export function gitCommit( [ git, options ] ) {
 export function gitTag( [ git, options ] ) {
 	const command = `git tag -a v${ options.versions.newVersion } -m "..."`;
 	utils.log.begin( command );
-	return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, options.shortlog )
+	return utils.promisify( ::git.addAnnotatedTag )( `v${ options.versions.newVersion }`, options.log )
 		.then( () => utils.log.end() );
 }
 
@@ -266,7 +261,7 @@ export function markTagAsRelease( [ git, options ] ) {
 			target_commitish: "master", // eslint-disable-line camelcase
 			tag_name: options.release.newVersion, // eslint-disable-line camelcase
 			name: options.release.newVersion,
-			body: options.shortlog
+			body: options.log
 		}, err => {
 			utils.log.end();
 		} );

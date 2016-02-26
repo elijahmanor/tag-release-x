@@ -59,7 +59,7 @@ test.cb( "gitLog gets a list of tag versions when no Next", t => {
 test.cb( "gitLog gets a log with the latest release when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
 	gitLog( [ git, {} ] ).then( () => {
-		t.ok( utils.exec.calledWith( "git log --date-order --pretty=format:'%s' 1.1.. < /dev/tty" ) );
+		t.ok( utils.exec.calledWith( "git --no-pager log --no-merges --date-order --pretty=format:'%s' 1.1.." ) );
 		t.end();
 	} );
 } );
