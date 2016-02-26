@@ -35,8 +35,8 @@ $ tag-release -d -r patch
 
 ## Future Updates
 
-* Remove the .shortlog temp file when complete
-* Don't ask about `develop` branch. Programmatically determine if the repository has a `develop` branch or not.
-* Clean up the `shortlog` better by removing commits blocks that are empty (the committer has no commits after merges were removed).
-* Don't ask to publish to `npm`. Look at the `package.json` to determine.
-* Publish tag as a release on GitHub. Get remote upstream URL in order to pass to API.
+[x] Remove the .shortlog temp file when complete
+[ ] Don't ask about `develop` branch. Programmatically determine if the repository has a `develop` branch or not.
+[x] Clean up the `shortlog` better by removing commits blocks that are empty (the committer has no commits after merges were removed).
+[ ] Don't ask to publish to `npm`. Look at the `package.json` private key to determine.
+[ ] Publish tag as a release on GitHub. Get remote upstream URL in order to pass to API.
