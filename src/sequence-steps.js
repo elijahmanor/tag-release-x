@@ -12,8 +12,8 @@ const sequenceSteps = [
 	gitMergeUpstreamMaster,
 	gitMergeUpstreamDevelop,
 	updateVersion,
-	gitShortlog,
-	updateShortlog,
+	gitLog,
+	updateLog,
 	updateChangelog,
 	gitDiff,
 	gitAdd,
@@ -71,12 +71,12 @@ export function removeMergeCommits( data ) {
 	return data.replace( /.*Merge pull request #.*\n/g, "" );
 }
 
-export function gitShortlog( [ git, options ] ) {
+export function gitLog( [ git, options ] ) {
 	let contents = utils.readFile( CHANGELOG_PATH );
 
 	if ( ~contents.indexOf( "### Next" ) ) {
 		contents = contents.replace( /### Next([^#]+)/, ( match, submatch ) => {
-			options.shortlog = submatch.trim();
+			options.log = submatch.trim();
 			return "";
 		} );
 		utils.writeFile( CHANGELOG_PATH, contents );
@@ -84,31 +84,32 @@ export function gitShortlog( [ git, options ] ) {
 		return utils.exec( "git tag --sort=v:refname" ).then( tags => {
 			tags = tags.trim().split( "\n" );
 			const latestRelease = tags[ tags.length - 1 ];
-			const command = `git --no-pager shortlog ${ latestRelease }.. < /dev/tty`;
+			const command = `git log --date-order --pretty=format:'%s' ${ latestRelease }.. < /dev/tty`;
 			utils.log.begin( command );
 			return utils.exec( command ).then( data => {
 				data = removeMergeCommits( data );
-				options.shortlog = data;
+				data = data.replace( /^(.+)$/gm, "* $1" );
+				options.log = data;
 				utils.log.end();
 			} );
 		} );
 	}
 }
 
-export function updateShortlog( [ git, options ] ) {
-	const command = "shortlog preview";
+export function updateLog( [ git, options ] ) {
+	const command = "log preview";
 	console.log( "Here is a preview of your log: \n", options.shortlog );
 	return utils.prompt( [ {
 		type: "confirm",
-		name: "shortlog",
+		name: "log",
 		message: "Would you like to edit your log",
 		default: true
 	} ] ).then( answers => {
 		utils.log.begin( command );
-		if ( answers.shortlog ) {
-			return utils.editor( options.shortlog )
+		if ( answers.log ) {
+			return utils.editor( options.log )
 				.then( data => {
-					options.shortlog = data.trim();
+					options.log = data.trim();
 					utils.log.end();
 				} );
 		}
@@ -117,13 +118,13 @@ export function updateShortlog( [ git, options ] ) {
 
 export function updateChangelog( [ git, options ] ) {
 	const version = `### ${ options.versions.newVersion }`;
-	const update = `${ version }\n\n${ options.shortlog }`;
+	const update = `${ version }\n\n${ options.log }`;
 	const command = "update changelog";
 	utils.log.begin( command );
 	let contents = utils.readFile( CHANGELOG_PATH );
 	if ( options.release === "major" ) {
 		const wildcardVersion = options.versions.newVersion.replace( ".0.0", ".x" );
-		contents = `${ wildcardVersion }\n\n${ update }\n` + contents;
+		contents = `## ${ wildcardVersion }\n\n${ update }\n\n${ contents }`;
 	} else {
 		contents = contents.replace( /(## .*\n)/, `$1\n${ update }\n` );
 	}

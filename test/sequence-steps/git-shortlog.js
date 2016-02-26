@@ -19,7 +19,7 @@ const utils = {
 };
 const removeMergeCommits = sinon.spy();
 
-import { gitShortlog, __RewireAPI__ as RewireAPI } from "../../src/sequence-steps";
+import { gitLog, __RewireAPI__ as RewireAPI } from "../../src/sequence-steps";
 
 test.beforeEach( t => {
 	utils.exec.reset();
@@ -32,49 +32,49 @@ test.afterEach( t => {
 	RewireAPI.__ResetDependency__( "removeMergeCommits" );
 } );
 
-test( "gitShortlog removes and formats a Next message", t => {
+test( "gitLog removes and formats a Next message", t => {
 	const options = {};
-	gitShortlog( [ git, options ] );
-	t.ok( options.shortlog, `* one
+	gitLog( [ git, options ] );
+	t.ok( options.log, `* one
 * two
 * three` );
 } );
 
-test.cb( "gitShortlog calls log.begin when no Next", t => {
+test.cb( "gitLog calls log.begin when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
-	gitShortlog( [ git, {} ] ).then( () => {
+	gitLog( [ git, {} ] ).then( () => {
 		t.ok( utils.log.begin.called );
 		t.end();
 	} );
 } );
 
-test.cb( "gitShortlog gets a list of tag versions when no Next", t => {
+test.cb( "gitLog gets a list of tag versions when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
-	gitShortlog( [ git, {} ] ).then( () => {
+	gitLog( [ git, {} ] ).then( () => {
 		t.ok( utils.exec.calledWith( "git tag --sort=v:refname" ) );
 		t.end();
 	} );
 } );
 
-test.cb( "gitShortlog gets a shortlog when no Next", t => {
+test.cb( "gitLog gets a log with the latest release when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
-	gitShortlog( [ git, {} ] ).then( () => {
-		t.ok( utils.exec.calledWith( "git --no-pager shortlog 1.1.. < /dev/tty" ) );
+	gitLog( [ git, {} ] ).then( () => {
+		t.ok( utils.exec.calledWith( "git log --date-order --pretty=format:'%s' 1.1.. < /dev/tty" ) );
 		t.end();
 	} );
 } );
 
-test.cb( "gitShortlog removes merge commits when no Next", t => {
+test.cb( "gitLog removes merge commits when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
-	gitShortlog( [ git, {} ] ).then( () => {
+	gitLog( [ git, {} ] ).then( () => {
 		t.ok( removeMergeCommits.called );
 		t.end();
 	} );
 } );
 
-test.cb( "gitShortlog calls log.end when no Next", t => {
+test.cb( "gitLog calls log.end when no Next", t => {
 	utils.readFile = sinon.stub().returns( "" );
-	gitShortlog( [ git, {} ] ).then( () => {
+	gitLog( [ git, {} ] ).then( () => {
 		t.ok( utils.log.end.called );
 		t.end();
 	} );
